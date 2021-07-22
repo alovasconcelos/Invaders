@@ -12,6 +12,7 @@
 #include <time.h>
 #include <string.h>
 
+
 int level = 0;
 
 // Flag to control the game loop
@@ -84,8 +85,8 @@ void updateScore() {
 */
 void drawScreen() {
 	printAtRowCol(0 ,  0, "+----------------------------------------------------------+");
-	printAtRowCol(1 ,  0, "|SCORE:                                            LEVEL:  |");
-	printAtRowCol(2 ,  0, "|                                                          |");
+	printAtRowCol(1 ,  0, "|SCORE:              I N V A D E R S               LEVEL:  |");
+	printAtRowCol(2 ,  0, "+----------------------------------------------------------+");
 	printAtRowCol(3 ,  0, "|                                                          |");
 	printAtRowCol(4 ,  0, "|                                                          |");
 	printAtRowCol(5 ,  0, "|                                                          |");
@@ -157,7 +158,7 @@ void fire() {
 */
 void gameOver() {
 	printAtRowCol(0 ,  0, "+----------------------------------------------------------+");
-	printAtRowCol(1 ,  0, "|SCORE:                                                    |");
+	printAtRowCol(1 ,  0, "|SCORE:              I N V A D E R S                       |");
 	printAtRowCol(2 ,  0, "|                                                          |");
  	printAtRowCol(3 ,  0, "|               ####     ##    #    #  ######              |");
 	printAtRowCol(4 ,  0, "|              #    #   #  #   ##  ##  #                   |");
@@ -175,14 +176,14 @@ void gameOver() {
 	printAtRowCol(16 , 0, "|               ####     ##    ######  #    #              |");
 	printAtRowCol(17 , 0, "|                                                          |");
 	printAtRowCol(18 , 0, "|                                                          |");
-	printAtRowCol(19 , 0, "|                                                          |");
+	printAtRowCol(19 , 0, "|By: André Vasconcelos        https://alovasconcelos.com.br|");
 	printAtRowCol(20 , 0, "+----------------------------------------------------------+");	
 }
 
 /*
  	Dray enemies
 */
-void drawEnemies() {
+int drawEnemies() {
 	int enemyNumber = 0;
 	for(int row = enemiesRow; row < enemiesRow + 4; row++) {
 		for(int col = enemiesCol; col < enemiesCol + 37; col += 6) {
@@ -190,10 +191,7 @@ void drawEnemies() {
 				printAtRowCol(row, col, enemy);
 				if (row == 19) {
 					// Game over
-					gameOver();
-					updateScore();
-					refresh();
-					sleep(5);					
+					return 0;
 				}
 			}else{
 				printAtRowCol(row, col, "   ");
@@ -202,6 +200,183 @@ void drawEnemies() {
 			refresh();
 		}
 	}
+	return 1;
+}
+
+/*
+	Reset enemies status
+*/
+void resetEnemiesStatus() {
+	for(int i=0; i<28; i++) {
+		enemiesStatus[i]=1;
+	}
+}
+
+/*
+	Show level information
+*/
+void showLevel() {
+ 	printAtRowCol(3 ,  0, "|          #       ######  #    #  ######  #               |");
+	printAtRowCol(4 ,  0, "|          #       #       #    #  #       #               |");
+	printAtRowCol(5 ,  0, "|          #       #####   #    #  #####   #               |");
+	printAtRowCol(6 ,  0, "|          #       #       #    #  #       #               |");
+	printAtRowCol(7 ,  0, "|          #       #        #  #   #       #               |");
+	printAtRowCol(8 ,  0, "|          ######  ######    ##    ######  ######          |");	
+
+	switch (level)
+	{
+		case 1:
+			printAtRowCol(10 , 0, "|                            #                             |");	
+			printAtRowCol(11 , 0, "|                           ##                             |");	
+			printAtRowCol(12 , 0, "|                          # #                             |");	
+			printAtRowCol(13 , 0, "|                            #                             |");	
+			printAtRowCol(14 , 0, "|                            #                             |");	
+			printAtRowCol(15 , 0, "|                            #                             |");	
+			printAtRowCol(16 , 0, "|                          #####                           |");	
+			break;
+		case 2:
+			printAtRowCol(10 , 0, "|                          #####                           |");	
+			printAtRowCol(11 , 0, "|                         #     #                          |");	
+			printAtRowCol(12 , 0, "|                               #                          |");	
+			printAtRowCol(13 , 0, "|                          #####                           |");	
+			printAtRowCol(14 , 0, "|                         #                                |");	
+			printAtRowCol(15 , 0, "|                         #                                |");	
+			printAtRowCol(16 , 0, "|                         #######                          |");	
+			break;
+		case 3:
+			printAtRowCol(10 , 0, "|                          #####                           |");	
+			printAtRowCol(11 , 0, "|                         #     #                          |");	
+			printAtRowCol(12 , 0, "|                               #                          |");	
+			printAtRowCol(13 , 0, "|                          #####                           |");	
+			printAtRowCol(14 , 0, "|                               #                          |");	
+			printAtRowCol(15 , 0, "|                         #     #                          |");	
+			printAtRowCol(16 , 0, "|                          #####                           |");	
+			break;
+		case 4:
+			printAtRowCol(10 , 0, "|                         #                                |");	
+			printAtRowCol(11 , 0, "|                         #    #                           |");	
+			printAtRowCol(12 , 0, "|                         #    #                           |");	
+			printAtRowCol(13 , 0, "|                         #######                          |");	
+			printAtRowCol(14 , 0, "|                              #                           |");	
+			printAtRowCol(15 , 0, "|                              #                           |");	
+			printAtRowCol(16 , 0, "|                              #                           |");	
+			break;
+		case 5:
+			printAtRowCol(10 , 0, "|                        #######                           |");	
+			printAtRowCol(11 , 0, "|                        #                                 |");	
+			printAtRowCol(12 , 0, "|                        #                                 |");	
+			printAtRowCol(13 , 0, "|                         #####                            |");	
+			printAtRowCol(14 , 0, "|                              #                           |");	
+			printAtRowCol(15 , 0, "|                        #     #                           |");	
+			printAtRowCol(16 , 0, "|                         #####                            |");	
+			break;
+		case 6:
+			printAtRowCol(10 , 0, "|                         #####                            |");	
+			printAtRowCol(11 , 0, "|                        #     #                           |");	
+			printAtRowCol(12 , 0, "|                        #                                 |");	
+			printAtRowCol(13 , 0, "|                        ######                            |");	
+			printAtRowCol(14 , 0, "|                        #     #                           |");	
+			printAtRowCol(15 , 0, "|                        #     #                           |");	
+			printAtRowCol(16 , 0, "|                         #####                            |");	
+			break;
+		case 7:
+			printAtRowCol(10 , 0, "|                        #######                           |");	
+			printAtRowCol(11 , 0, "|                        #    #                            |");	
+			printAtRowCol(12 , 0, "|                            #                             |");	
+			printAtRowCol(13 , 0, "|                           #                              |");	
+			printAtRowCol(14 , 0, "|                          #                               |");	
+			printAtRowCol(15 , 0, "|                          #                               |");	
+			printAtRowCol(16 , 0, "|                          #                               |");	
+			break;
+		case 8:
+			printAtRowCol(10 , 0, "|                         #####                            |");	
+			printAtRowCol(11 , 0, "|                        #     #                           |");	
+			printAtRowCol(12 , 0, "|                        #     #                           |");	
+			printAtRowCol(13 , 0, "|                         #####                            |");	
+			printAtRowCol(14 , 0, "|                        #     #                           |");	
+			printAtRowCol(15 , 0, "|                        #     #                           |");	
+			printAtRowCol(16 , 0, "|                         #####                            |");	
+			break;
+		case 9:
+			printAtRowCol(10 , 0, "|                         #####                            |");	
+			printAtRowCol(11 , 0, "|                        #     #                           |");	
+			printAtRowCol(12 , 0, "|                        #     #                           |");	
+			printAtRowCol(13 , 0, "|                         ######                           |");	
+			printAtRowCol(14 , 0, "|                              #                           |");	
+			printAtRowCol(15 , 0, "|                        #     #                           |");	
+			printAtRowCol(16 , 0, "|                         #####                            |");	
+			break;
+	}
+
+	refresh();
+}
+
+/*
+	Hide level information
+*/
+void hideLevel() {
+ 	printAtRowCol(3 ,  0, "|                                                          |");
+	printAtRowCol(4 ,  0, "|                                                          |");
+	printAtRowCol(5 ,  0, "|                                                          |");
+	printAtRowCol(6 ,  0, "|                                                          |");
+	printAtRowCol(7 ,  0, "|                                                          |");
+	printAtRowCol(8 ,  0, "|                                                          |");	
+	printAtRowCol(10 ,  0, "|                                                          |");	
+	printAtRowCol(11 ,  0, "|                                                          |");	
+	printAtRowCol(12 ,  0, "|                                                          |");	
+	printAtRowCol(13 ,  0, "|                                                          |");	
+	printAtRowCol(14,  0, "|                                                          |");	
+	printAtRowCol(15 ,  0, "|                                                          |");	
+	printAtRowCol(16 ,  0, "|                                                          |");	
+	refresh();
+
+}
+
+/*
+	Start level
+*/
+void nextLevel() {
+	level++;
+	cannonCol = 28;	
+	enemiesCol = 10;
+	enemiesRow = 5;
+	enemiesDirection = 1;
+	fire1 = 0;
+	fire2 = 0;
+	fire3 = 0;
+	bullet1Row = 18;
+	bullet2Row = 18;
+	bullet3Row = 18;
+	bullet1Col = 0;
+	bullet2Col = 0;
+	bullet3Col = 0;
+	tick = 0;
+	killedEnemies = 0;
+	resetEnemiesStatus();
+
+	// Draw game screen
+	drawScreen();
+
+	// Show level
+	showLevel();
+	sleep(2);
+	hideLevel();
+
+	// Draw enemies
+	drawEnemies();
+
+	// Show level
+	char buffer[12];
+	snprintf(buffer, 12,"%d",level);
+	printAtRowCol(1, 58, buffer);
+}
+
+/*
+	Restart the game
+*/
+void restartGame() {
+	level = 0;
+	score = 0;
 }
 
 /*
@@ -226,7 +401,7 @@ void drawBullets() {
 		}
 		printAtRowCol(bullet1Row, bullet1Col, "^");
 		bullet1Row--;	
-		if (bullet1Row == 0) {
+		if (bullet1Row == 2) {
 			printAtRowCol(bullet1Row + 1, bullet1Col, " ");
 			fire1 = 0;
 			bullet1Row = 18;
@@ -238,7 +413,7 @@ void drawBullets() {
 		}
 		printAtRowCol(bullet2Row, bullet2Col, "^");
 		bullet2Row--;	
-		if (bullet2Row == 0) {
+		if (bullet2Row == 2) {
 			printAtRowCol(bullet2Row + 1, bullet2Col, " ");
 			fire2 = 0;
 			bullet2Row = 18;
@@ -250,7 +425,7 @@ void drawBullets() {
 		}
 		printAtRowCol(bullet3Row, bullet3Col, "^");
 		bullet3Row--;	
-		if (bullet3Row == 0) {
+		if (bullet3Row == 2) {
 			printAtRowCol(bullet3Row + 1, bullet3Col, " ");
 			fire3 = 0;
 			bullet3Row = 18;
@@ -266,6 +441,26 @@ void endGame() {
 }
 
 /*
+	ExplodeEnemy
+*/
+void explodeEnemy(int row, int col) {
+	printAtRowCol(row, col, "***");
+	refresh();
+	usleep(50000);
+	printAtRowCol(row, col, ".*.");
+	refresh();
+	usleep(50000);
+	printAtRowCol(row, col, " * ");
+	refresh();
+	usleep(50000);
+	printAtRowCol(row, col, " . ");
+	refresh();
+	usleep(50000);
+	printAtRowCol(row, col, "   ");
+	refresh();
+}
+
+/*
  	Check if theres an enemy at a given position
 */
 int isEnemy(int row, int col) {
@@ -276,6 +471,7 @@ int isEnemy(int row, int col) {
 				if (row == enemyRow && col >= enemyCol && col <= enemyCol + 2) {
 					// Enemy has been hit
 					enemiesStatus[enemyNumber] = 0;
+					explodeEnemy(enemyRow, enemyCol);
 					killedEnemies++;
 					score += enemyRow;
 					return 1;
@@ -290,11 +486,11 @@ int isEnemy(int row, int col) {
 /*
 	Update enemies
 */
-void updateEnemies() {
+int updateEnemies() {
 
 	int r = rand() % 100;
 
-	if (tick++ % 5 == 0) {
+	if (tick++ % (8 - level) == 0) {
 		if (r > 50) {
 			clearEnemies();
 			enemiesCol += enemiesDirection;
@@ -304,7 +500,9 @@ void updateEnemies() {
 			enemiesRow++;
 		}
 	}
-	drawEnemies();
+	if(drawEnemies() == 0){
+		return 0;
+	}
 
 	if (enemiesCol == 19) {
 		enemiesDirection = -1;
@@ -312,6 +510,7 @@ void updateEnemies() {
 	if (enemiesCol == 1) {
 		enemiesDirection = 1;
 	}
+	return 1;
 }
 
 /*
@@ -386,48 +585,7 @@ void checkTargetHit() {
 	}
 }
 
-/*
-	Reset enemies status
-*/
-void resetEnemiesStatus() {
-	for(int i=0; i<28; i++) {
-		enemiesStatus[i]=1;
-	}
-}
 
-/*
-	Start level
-*/
-void nextLevel() {
-	level++;
-	cannonCol = 28;	
-	enemiesCol = 10;
-	enemiesRow = 5;
-	enemiesDirection = 1;
-	fire1 = 0;
-	fire2 = 0;
-	fire3 = 0;
-	bullet1Row = 18;
-	bullet2Row = 18;
-	bullet3Row = 18;
-	bullet1Col = 0;
-	bullet2Col = 0;
-	bullet3Col = 0;
-	tick = 0;
-	killedEnemies = 0;
-	resetEnemiesStatus();
-
-	// Draw game screen
-	drawScreen();
-
-	// Draw enemies
-	drawEnemies();
-
-	// Show level
-	char buffer[12];
-	snprintf(buffer, 12,"%d",level);
-	printAtRowCol(1, 58, buffer);
-}
 
 /*
 	Main function
@@ -459,12 +617,16 @@ int main(void) {
 		switch(key)
 		{	
 			case KEY_LEFT:
-				clearCannon();
-				cannonCol--;
+				if(cannonCol > 1) {
+					clearCannon();
+					cannonCol--;
+				}
 				break;
 			case KEY_RIGHT:
-				clearCannon();
-				cannonCol++;
+				if(cannonCol < 56) {
+					clearCannon();
+					cannonCol++;
+				}
 				break;
 			case ' ':
 				fire();
@@ -473,17 +635,25 @@ int main(void) {
 				endGame();
 				break;
 		}
-		updateEnemies();
-		drawBullets();
-		checkTargetHit();
-		updateScore();
-		drawCannon();
-    	refresh();
-		if (killedEnemies == 28) {
-			if (level < 9) {
-				// Go to nextLevel
-				nextLevel();
+		if (updateEnemies() == 1) {
+			drawBullets();
+			checkTargetHit();
+			updateScore();
+			drawCannon();
+			refresh();
+			if (killedEnemies == 28) {
+				if (level < 9) {
+					// Go to nextLevel
+					nextLevel();
+				}
 			}
+		}else{
+			gameOver();
+			updateScore();
+			refresh();
+			sleep(2);
+			restartGame();
+			nextLevel();
 		}
 	}
 
