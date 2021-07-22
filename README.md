@@ -9,5 +9,7 @@ You must have GCC and NCurses in order to compile.
 On Ubuntu:
 
 sudo apt-get update
+
 sudo apt-get install gcc
+
 sudo apt-get install libncurses-dev
