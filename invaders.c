@@ -5,6 +5,7 @@
  * alovasconcelos@gmail.com
  * 2021
  */
+
 #include <curses.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,8 +14,10 @@
 #include <string.h>
 
 
-int level = 0;
+WINDOW * mainwin;
+int key;
 
+int level = 0;
 // Flag to control the game loop
 int keepRunning = 1;
 
@@ -105,6 +108,17 @@ void drawScreen() {
 	printAtRowCol(18 , 0, "|                                                          |");
 	printAtRowCol(19 , 0, "|                                                          |");
 	printAtRowCol(20 , 0, "+----------------------------------------------------------+");
+	printAtRowCol(24 , 0, "+----------------------------------------------------------+");
+}
+
+/*
+	Show help bar
+*/
+void showHelp() {
+	printAtRowCol(21 , 0, "|Use left and right arrows keys to move your cannon        |");
+	printAtRowCol(22 , 0, "|Press space to shoot                                      |");
+	printAtRowCol(23 , 0, "|Press 'End' key to quit the game                          |");
+	refresh();
 }
 
 /*
@@ -160,25 +174,30 @@ void gameOver() {
 	printAtRowCol(0 ,  0, "+----------------------------------------------------------+");
 	printAtRowCol(1 ,  0, "|SCORE:              I N V A D E R S                       |");
 	printAtRowCol(2 ,  0, "|                                                          |");
- 	printAtRowCol(3 ,  0, "|               ####     ##    #    #  ######              |");
-	printAtRowCol(4 ,  0, "|              #    #   #  #   ##  ##  #                   |");
-	printAtRowCol(5 ,  0, "|              #       #    #  # ## #  #####               |");
-	printAtRowCol(6 ,  0, "|              #  ###  ######  #    #  #                   |");
-	printAtRowCol(7 ,  0, "|              #    #  #    #  #    #  #                   |");
-	printAtRowCol(8 ,  0, "|               ####   #    #  #    #  ######              |");
-	printAtRowCol(9 ,  0, "|                                                          |");
-	printAtRowCol(10 , 0, "|                                                          |");
-	printAtRowCol(11 , 0, "|               ####   #    #  ######  #####               |");
-	printAtRowCol(12 , 0, "|              #    #  #    #  #       #    #              |");
-	printAtRowCol(13 , 0, "|              #    #  #    #  #####   #    #              |");
-	printAtRowCol(14 , 0, "|              #    #  #    #  #       #####               |");
-	printAtRowCol(15 , 0, "|              #    #   #  #   #       #   #               |");
-	printAtRowCol(16 , 0, "|               ####     ##    ######  #    #              |");
-	printAtRowCol(17 , 0, "|                                                          |");
-	printAtRowCol(18 , 0, "|                                                          |");
-	printAtRowCol(19 , 0, "|By: André Vasconcelos        https://alovasconcelos.com.br|");
-	printAtRowCol(20 , 0, "+----------------------------------------------------------+");	
+	printAtRowCol(3 ,  0, "|                                                          |");
+	printAtRowCol(4 ,  0, "|                                                          |");
+ 	printAtRowCol(5 ,  0, "|               ####     ##    #    #  ######              |");
+	printAtRowCol(6 ,  0, "|              #    #   #  #   ##  ##  #                   |");
+	printAtRowCol(7 ,  0, "|              #       #    #  # ## #  #####               |");
+	printAtRowCol(8 ,  0, "|              #  ###  ######  #    #  #                   |");
+	printAtRowCol(9 ,  0, "|              #    #  #    #  #    #  #                   |");
+	printAtRowCol(10 , 0, "|               ####   #    #  #    #  ######              |");
+	printAtRowCol(11 , 0, "|                                                          |");
+	printAtRowCol(12 , 0, "|                                                          |");
+	printAtRowCol(13 , 0, "|               ####   #    #  ######  #####               |");
+	printAtRowCol(14 , 0, "|              #    #  #    #  #       #    #              |");
+	printAtRowCol(15 , 0, "|              #    #  #    #  #####   #    #              |");
+	printAtRowCol(16 , 0, "|              #    #  #    #  #       #####               |");
+	printAtRowCol(17 , 0, "|              #    #   #  #   #       #   #               |");
+	printAtRowCol(18 , 0, "|               ####     ##    ######  #    #              |");
+	printAtRowCol(19 , 0, "|                                                          |");
+	printAtRowCol(20 , 0, "|                                                          |");
+	printAtRowCol(21 , 0, "|                                                          |");
+	printAtRowCol(22 , 0, "|                                                          |");
+	printAtRowCol(23 , 0, "|By: André Vasconcelos        https://alovasconcelos.com.br|");
+	printAtRowCol(24 , 0, "+----------------------------------------------------------+");	
 }
+
 
 /*
  	Dray enemies
@@ -357,6 +376,9 @@ void nextLevel() {
 	// Draw game screen
 	drawScreen();
 
+	// Show help bar
+	showHelp();
+
 	// Show level
 	showLevel();
 	sleep(2);
@@ -437,7 +459,19 @@ void drawBullets() {
 	Finish the game
 */
 void endGame() {
-	keepRunning = 0;
+	printAtRowCol(21 , 0, "|Do you really want to quit the game?                      |");
+	printAtRowCol(22 , 0, "|    Press Y to confirm                                    |");
+	printAtRowCol(23 , 0, "|    Or N to keep playing                                  |");
+    refresh();
+    int ch;
+	while (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n') {
+		ch = wgetch(mainwin);
+	}
+              
+    if(ch == 'y' || ch == 'Y') {
+		keepRunning = 0;
+    }
+	showHelp();
 }
 
 /*
@@ -585,14 +619,10 @@ void checkTargetHit() {
 	}
 }
 
-
-
 /*
 	Main function
 */
 int main(void) {
-    WINDOW * mainwin;
-	int key;
 	
     //  Initialize NCurses  
     if ( (mainwin = initscr()) == NULL ) {
@@ -631,7 +661,7 @@ int main(void) {
 			case ' ':
 				fire();
 				break;
-			case KEY_HOME:
+			case KEY_END:
 				endGame();
 				break;
 		}
@@ -643,7 +673,7 @@ int main(void) {
 			refresh();
 			if (killedEnemies == 28) {
 				if (level < 9) {
-					// Go to nextLevel
+					// Go to next level
 					nextLevel();
 				}
 			}
@@ -660,6 +690,8 @@ int main(void) {
     delwin(mainwin);
     endwin();
     refresh();
+
+	printf("\n\nBye...\n");
 
     return EXIT_SUCCESS;
 }
