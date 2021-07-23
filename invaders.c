@@ -13,6 +13,14 @@
 #include <time.h>
 #include <string.h>
 
+// Cannon
+char *cannon = "^-^";
+
+// Enemy
+char *enemy = ">o<";
+
+// Bullet
+char *bullet = "^";
 
 WINDOW * mainwin;
 int key;
@@ -52,11 +60,6 @@ int score = 0;
 // Counter used to sincronize enemies moves
 int tick;
 
-// Cannon
-char *cannon = "^-^";
-
-// Enemy
-char *enemy = ">o<";
 
 // Array of enemies status
 int enemiesStatus[28] = {1,1,1,1,1,1,1,
@@ -421,7 +424,7 @@ void drawBullets() {
 		if (bullet1Row < 18) {
 			printAtRowCol(bullet1Row + 1, bullet1Col, " ");
 		}
-		printAtRowCol(bullet1Row, bullet1Col, "^");
+		printAtRowCol(bullet1Row, bullet1Col, bullet);
 		bullet1Row--;	
 		if (bullet1Row == 2) {
 			printAtRowCol(bullet1Row + 1, bullet1Col, " ");
@@ -433,7 +436,7 @@ void drawBullets() {
 		if (bullet2Row < 18) {
 			printAtRowCol(bullet2Row + 1, bullet2Col, " ");
 		}
-		printAtRowCol(bullet2Row, bullet2Col, "^");
+		printAtRowCol(bullet2Row, bullet2Col, bullet);
 		bullet2Row--;	
 		if (bullet2Row == 2) {
 			printAtRowCol(bullet2Row + 1, bullet2Col, " ");
@@ -445,7 +448,7 @@ void drawBullets() {
 		if (bullet3Row < 18) {
 			printAtRowCol(bullet3Row + 1, bullet3Col, " ");
 		}
-		printAtRowCol(bullet3Row, bullet3Col, "^");
+		printAtRowCol(bullet3Row, bullet3Col, bullet);
 		bullet3Row--;	
 		if (bullet3Row == 2) {
 			printAtRowCol(bullet3Row + 1, bullet3Col, " ");
