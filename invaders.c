@@ -17,7 +17,9 @@
 WINDOW * mainwin;
 int key;
 
+// Level number
 int level = 0;
+
 // Flag to control the game loop
 int keepRunning = 1;
 
@@ -49,7 +51,7 @@ int bullet3Col;
 // Score
 int score = 0;
 
-// Counter used to sincronize enemies moves
+// Counter used to control enemies moves
 int tick;
 
 // Cannon
@@ -58,34 +60,34 @@ char *cannon = "^-^";
 // Enemy
 char *enemy = ">o<";
 
-// Array of enemies status
+// Array of enemies status - 1:alive 0:killed
 int enemiesStatus[28] = {1,1,1,1,1,1,1,
 					1,1,1,1,1,1,1,
 					1,1,1,1,1,1,1,
 					1,1,1,1,1,1,1};
 
-// Killed enemies
+// Number of killed enemies
 int killedEnemies;
 
-/*
- 	Print string at specified coordinate
-*/
+/**
+ * 	Print string at specified coordinate
+ */
 void printAtRowCol(int row, int col, char *str) {
 	mvaddstr(row, col, str);
 }
 
-/*
-	Update score
-*/
+/**
+ * Update the score
+ */
 void updateScore() {	
 	char buffer[12];
 	snprintf(buffer, 12,"%d",score);
 	printAtRowCol(1, 8, buffer);
 }
 
-/*
-	Draw the game board
-*/
+/**
+ * Draw the game board
+ */
 void drawScreen() {
 	printAtRowCol(0 ,  0, "+----------------------------------------------------------+");
 	printAtRowCol(1 ,  0, "|SCORE:              I N V A D E R S               LEVEL:  |");
@@ -108,12 +110,15 @@ void drawScreen() {
 	printAtRowCol(18 , 0, "|                                                          |");
 	printAtRowCol(19 , 0, "|                                                          |");
 	printAtRowCol(20 , 0, "+----------------------------------------------------------+");
+	printAtRowCol(21 , 0, "|                                                          |");
+	printAtRowCol(22 , 0, "|                                                          |");
+	printAtRowCol(23 , 0, "|                                                          |");
 	printAtRowCol(24 , 0, "+----------------------------------------------------------+");
 }
 
-/*
-	Show help bar
-*/
+/**
+ * Show help bar
+ */
 void showHelp() {
 	printAtRowCol(21 , 0, "|Use left and right arrows keys to move your cannon        |");
 	printAtRowCol(22 , 0, "|Press space to shoot                                      |");
@@ -121,31 +126,31 @@ void showHelp() {
 	refresh();
 }
 
-/*
-	Get character at the specified coordinate
+/**
+ * Get character at the specified coordinate
 */
 char getCharRowCol(int row, int col) {
 	return mvinch(row, col);
 }
 
-/*
-	Draw the cannon
-*/
+/**
+ * Draw the cannon
+ */
 void drawCannon() {
 	printAtRowCol(19, cannonCol, cannon);
 	printAtRowCol(19, cannonCol + 1, "");
 }
 
-/*
-	Clear the cannon
-*/
+/**
+ * Clear the cannon
+ */
 void clearCannon() {
 	printAtRowCol(19, cannonCol, "   ");
 }
 
-/*
-	Fire bullets
-*/
+/**
+ * Fire bullets
+ */
 void fire() {
 	if (fire1 == 0) {
 		// fire bullet 1
@@ -167,9 +172,9 @@ void fire() {
 	}
 }
 
-/*
-	Game over
-*/
+/**
+ * Game over
+ */
 void gameOver() {
 	printAtRowCol(0 ,  0, "+----------------------------------------------------------+");
 	printAtRowCol(1 ,  0, "|SCORE:              I N V A D E R S                       |");
@@ -199,9 +204,9 @@ void gameOver() {
 }
 
 
-/*
- 	Dray enemies
-*/
+/**
+ * Dray enemies
+ */
 int drawEnemies() {
 	int enemyNumber = 0;
 	for(int row = enemiesRow; row < enemiesRow + 4; row++) {
@@ -222,8 +227,8 @@ int drawEnemies() {
 	return 1;
 }
 
-/*
-	Reset enemies status
+/**
+ * Reset enemies status
 */
 void resetEnemiesStatus() {
 	for(int i=0; i<28; i++) {
@@ -231,9 +236,9 @@ void resetEnemiesStatus() {
 	}
 }
 
-/*
-	Show level information
-*/
+/**
+ * Show level information
+ */
 void showLevel() {
  	printAtRowCol(3 ,  0, "|          #       ######  #    #  ######  #               |");
 	printAtRowCol(4 ,  0, "|          #       #       #    #  #       #               |");
@@ -330,9 +335,9 @@ void showLevel() {
 	refresh();
 }
 
-/*
-	Hide level information
-*/
+/**
+ * Hide level information
+ */
 void hideLevel() {
  	printAtRowCol(3 ,  0, "|                                                          |");
 	printAtRowCol(4 ,  0, "|                                                          |");
@@ -351,9 +356,9 @@ void hideLevel() {
 
 }
 
-/*
-	Start level
-*/
+/**
+ * Start the next level
+ */
 void nextLevel() {
 	level++;
 	cannonCol = 28;	
@@ -381,7 +386,11 @@ void nextLevel() {
 
 	// Show level
 	showLevel();
+
+	// Wait 2 seconds
 	sleep(2);
+
+	// Hide level information
 	hideLevel();
 
 	// Draw enemies
@@ -393,17 +402,17 @@ void nextLevel() {
 	printAtRowCol(1, 58, buffer);
 }
 
-/*
-	Restart the game
-*/
+/**
+ * Restart the game
+ */
 void restartGame() {
 	level = 0;
 	score = 0;
 }
 
-/*
-	Clear enemies
-*/
+/**
+ * Clear enemies
+ */
 void clearEnemies() {
 	for(int row = enemiesRow; row < enemiesRow + 4; row++) {
 		for(int col = enemiesCol; col < enemiesCol + 37; col+= 6) {
@@ -413,9 +422,9 @@ void clearEnemies() {
 	}
 }
 
-/*
-	Draw the fired bullets
-*/
+/**
+ * Draw the fired bullets
+ */
 void drawBullets() {
 	if (fire1 == 1) {
 		if (bullet1Row < 18) {
@@ -455,9 +464,9 @@ void drawBullets() {
 	}
 }
 
-/*
-	Finish the game
-*/
+/**
+ * Finish the game
+ */
 void endGame() {
 	printAtRowCol(21 , 0, "|Do you really want to quit the game?                      |");
 	printAtRowCol(22 , 0, "|    Press Y to confirm                                    |");
@@ -474,9 +483,9 @@ void endGame() {
 	showHelp();
 }
 
-/*
-	ExplodeEnemy
-*/
+/**
+ * ExplodeEnemy
+ */
 void explodeEnemy(int row, int col) {
 	printAtRowCol(row, col, "***");
 	refresh();
@@ -494,9 +503,9 @@ void explodeEnemy(int row, int col) {
 	refresh();
 }
 
-/*
- 	Check if theres an enemy at a given position
-*/
+/**
+ * Check if theres an enemy at a given position
+ */
 int isEnemy(int row, int col) {
 	int enemyNumber = 0;
 	for(int enemyRow = enemiesRow; enemyRow < enemiesRow + 4; enemyRow++) {
@@ -517,9 +526,9 @@ int isEnemy(int row, int col) {
 	return 0;
 }
  
-/*
-	Update enemies
-*/
+/**
+ * Update enemies
+ */
 int updateEnemies() {
 
 	int r = rand() % 100;
@@ -547,9 +556,9 @@ int updateEnemies() {
 	return 1;
 }
 
-/*
-	Destroy enemy
-*/
+/**
+ * Destroy enemy
+ */
 void destroyEnemy(int row, int col) {
 	if (getCharRowCol(row, col) == '>') {
 		printAtRowCol(row, col, "   ");		
@@ -562,16 +571,16 @@ void destroyEnemy(int row, int col) {
 	}
 }
 
-/*
-	Destroy bullet
-*/
+/**
+ * Destroy bullet
+ */
 void destroyBullet(int row, int col) {
 	printAtRowCol(row, col, " ");
 }
 
-/*
-	Reset fire
-*/
+/**
+ * Reset fire
+ */
 void resetFire(int bulletNumber) {	
 	switch(bulletNumber) {
 		case 1:			
@@ -592,9 +601,9 @@ void resetFire(int bulletNumber) {
 	}
 }
 
-/*
-	Check if the target has been hit
-*/
+/**
+ * Check if the target has been hit
+ */
 void checkTargetHit() {	
 	if (fire1) {
 		// bullet 1 is fired
@@ -619,9 +628,9 @@ void checkTargetHit() {
 	}
 }
 
-/*
-	Main function
-*/
+/**
+ * Main function
+ */
 int main(void) {
 	
     //  Initialize NCurses  
