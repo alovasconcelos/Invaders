@@ -13,6 +13,13 @@
 #include <time.h>
 #include <string.h>
 
+// Constants to colors definition
+#define BULLET_COLOR 1
+#define ENEMY_COLOR 2
+#define CANNON_COLOR 3
+#define SCORE_COLOR 4
+#define LEVEL_COLOR 5
+
 // Cannon
 char *cannon = "^-^";
 
@@ -21,6 +28,9 @@ char *enemy = ">o<";
 
 // Bullet
 char *bullet = "^";
+
+// Explosion
+char *explosionParts[5] = {	"***", ".*.", " * ", " . ", "   " };
 
 WINDOW * mainwin;
 int key;
@@ -85,7 +95,9 @@ void printAtRowCol(int row, int col, char *str) {
 void updateScore() {	
 	char buffer[12];
 	snprintf(buffer, 12,"%d",score);
+	attron(COLOR_PAIR(SCORE_COLOR));
 	printAtRowCol(1, 8, buffer);
+	attroff(COLOR_PAIR(SCORE_COLOR));
 }
 
 /**
@@ -133,15 +145,17 @@ void showHelp() {
  * Get character at the specified coordinate
 */
 char getCharRowCol(int row, int col) {
-	return mvinch(row, col);
+	return mvinch(row, col) & A_CHARTEXT;
 }
 
 /**
  * Draw the cannon
  */
 void drawCannon() {
+	attron(COLOR_PAIR(CANNON_COLOR));
 	printAtRowCol(19, cannonCol, cannon);
 	printAtRowCol(19, cannonCol + 1, "");
+	attroff(COLOR_PAIR(CANNON_COLOR));
 }
 
 /**
@@ -208,14 +222,16 @@ void gameOver() {
 
 
 /**
- * Dray enemies
+ * Draw enemies
  */
 int drawEnemies() {
 	int enemyNumber = 0;
 	for(int row = enemiesRow; row < enemiesRow + 4; row++) {
 		for(int col = enemiesCol; col < enemiesCol + 37; col += 6) {
 			if (enemiesStatus[enemyNumber]) {
+				attron(COLOR_PAIR(ENEMY_COLOR));
 				printAtRowCol(row, col, enemy);
+				attron(COLOR_PAIR(ENEMY_COLOR));
 				if (row == 19) {
 					// Game over
 					return 0;
@@ -227,6 +243,7 @@ int drawEnemies() {
 			refresh();
 		}
 	}
+
 	return 1;
 }
 
@@ -402,7 +419,9 @@ void nextLevel() {
 	// Show level
 	char buffer[12];
 	snprintf(buffer, 12,"%d",level);
+	attron(COLOR_PAIR(LEVEL_COLOR));
 	printAtRowCol(1, 58, buffer);
+	attroff(COLOR_PAIR(LEVEL_COLOR));
 }
 
 /**
@@ -429,6 +448,7 @@ void clearEnemies() {
  * Draw the fired bullets
  */
 void drawBullets() {
+	attron(COLOR_PAIR(BULLET_COLOR));
 	if (fire1 == 1) {
 		if (bullet1Row < 18) {
 			printAtRowCol(bullet1Row + 1, bullet1Col, " ");
@@ -465,6 +485,7 @@ void drawBullets() {
 			bullet3Row = 18;
 		}		
 	}
+	attroff(COLOR_PAIR(BULLET_COLOR));
 }
 
 /**
@@ -490,20 +511,11 @@ void endGame() {
  * ExplodeEnemy
  */
 void explodeEnemy(int row, int col) {
-	printAtRowCol(row, col, "***");
-	refresh();
-	usleep(50000);
-	printAtRowCol(row, col, ".*.");
-	refresh();
-	usleep(50000);
-	printAtRowCol(row, col, " * ");
-	refresh();
-	usleep(50000);
-	printAtRowCol(row, col, " . ");
-	refresh();
-	usleep(50000);
-	printAtRowCol(row, col, "   ");
-	refresh();
+	for(int i = 0 ; i < 5; i++) {
+		printAtRowCol(row, col, "***");
+		usleep(5000);
+		refresh();
+	}
 }
 
 /**
@@ -638,13 +650,31 @@ int main(void) {
 	
     //  Initialize NCurses  
     if ( (mainwin = initscr()) == NULL ) {
-    	fprintf(stderr, "Erro inicializando NCurses.\n");
+    	fprintf(stderr, "Error initializing NCurses.\n");
     	exit(EXIT_FAILURE);
     }
 
 	// Keyboard configuration
 	keypad(mainwin, TRUE);
+	cbreak();
 	noecho();
+
+	// Initialize colors
+	if (has_colors() == FALSE) {
+		endwin();
+		printf("Your terminal doesn't support colors\n\n");
+		exit(1);
+	}
+	
+	// Starts color mode
+	start_color();
+
+	// Define the colors
+	init_pair(BULLET_COLOR, COLOR_RED, COLOR_BLACK);
+	init_pair(ENEMY_COLOR, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(CANNON_COLOR, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(SCORE_COLOR, COLOR_BLUE, COLOR_BLACK);
+	init_pair(LEVEL_COLOR, COLOR_BLUE, COLOR_BLACK);
 
 	// Initialize random seed
 	srand(time(NULL));	
