@@ -135,9 +135,9 @@ void drawScreen() {
  * Show help bar
  */
 void showHelp() {
-	printAtRowCol(21 , 0, "|Use left and right arrows keys to move your cannon        |");
-	printAtRowCol(22 , 0, "|Press space to shoot                                      |");
-	printAtRowCol(23 , 0, "|Press 'End' key to quit the game                          |");
+	printAtRowCol(21 , 1, "Use left and right arrows keys to move your cannon");
+	printAtRowCol(22 , 1, "Press space to shoot");
+	printAtRowCol(23 , 1, "Press 'End' key to quit the game");
 	refresh();
 }
 
@@ -193,31 +193,23 @@ void fire() {
  * Game over
  */
 void gameOver() {
-	printAtRowCol(0 ,  0, "+----------------------------------------------------------+");
-	printAtRowCol(1 ,  0, "|SCORE:              I N V A D E R S                       |");
-	printAtRowCol(2 ,  0, "|                                                          |");
-	printAtRowCol(3 ,  0, "|                                                          |");
-	printAtRowCol(4 ,  0, "|                                                          |");
- 	printAtRowCol(5 ,  0, "|               ####     ##    #    #  ######              |");
-	printAtRowCol(6 ,  0, "|              #    #   #  #   ##  ##  #                   |");
-	printAtRowCol(7 ,  0, "|              #       #    #  # ## #  #####               |");
-	printAtRowCol(8 ,  0, "|              #  ###  ######  #    #  #                   |");
-	printAtRowCol(9 ,  0, "|              #    #  #    #  #    #  #                   |");
-	printAtRowCol(10 , 0, "|               ####   #    #  #    #  ######              |");
-	printAtRowCol(11 , 0, "|                                                          |");
-	printAtRowCol(12 , 0, "|                                                          |");
-	printAtRowCol(13 , 0, "|               ####   #    #  ######  #####               |");
-	printAtRowCol(14 , 0, "|              #    #  #    #  #       #    #              |");
-	printAtRowCol(15 , 0, "|              #    #  #    #  #####   #    #              |");
-	printAtRowCol(16 , 0, "|              #    #  #    #  #       #####               |");
-	printAtRowCol(17 , 0, "|              #    #   #  #   #       #   #               |");
-	printAtRowCol(18 , 0, "|               ####     ##    ######  #    #              |");
-	printAtRowCol(19 , 0, "|                                                          |");
-	printAtRowCol(20 , 0, "|                                                          |");
-	printAtRowCol(21 , 0, "|                                                          |");
-	printAtRowCol(22 , 0, "|                                                          |");
-	printAtRowCol(23 , 0, "|By: André Vasconcelos        https://alovasconcelos.com.br|");
-	printAtRowCol(24 , 0, "+----------------------------------------------------------+");	
+ 	printAtRowCol(5 ,  1, "               ####     ##    #    #  ######              ");
+	printAtRowCol(6 ,  1, "              #    #   #  #   ##  ##  #                   ");
+	printAtRowCol(7 ,  1, "              #       #    #  # ## #  #####               ");
+	printAtRowCol(8 ,  1, "              #  ###  ######  #    #  #                   ");
+	printAtRowCol(9 ,  1, "              #    #  #    #  #    #  #                   ");
+	printAtRowCol(10 , 1, "               ####   #    #  #    #  ######              ");
+	printAtRowCol(13 , 1, "               ####   #    #  ######  #####               ");
+	printAtRowCol(14 , 1, "              #    #  #    #  #       #    #              ");
+	printAtRowCol(15 , 1, "              #    #  #    #  #####   #    #              ");
+	printAtRowCol(16 , 1, "              #    #  #    #  #       #####               ");
+	printAtRowCol(17 , 1, "              #    #   #  #   #       #   #               ");
+	printAtRowCol(18 , 1, "               ####     ##    ######  #    #              ");
+	printAtRowCol(19 , 1, "                                                          ");
+	printAtRowCol(20 , 1, "                                                          ");
+	printAtRowCol(21 , 1, "                                                          ");
+	printAtRowCol(22 , 1, "                                                          ");
+	printAtRowCol(23 , 1, "By: André Vasconcelos        https://alovasconcelos.com.br");
 }
 
 
@@ -359,21 +351,10 @@ void showLevel() {
  * Hide level information
  */
 void hideLevel() {
- 	printAtRowCol(3 ,  0, "|                                                          |");
-	printAtRowCol(4 ,  0, "|                                                          |");
-	printAtRowCol(5 ,  0, "|                                                          |");
-	printAtRowCol(6 ,  0, "|                                                          |");
-	printAtRowCol(7 ,  0, "|                                                          |");
-	printAtRowCol(8 ,  0, "|                                                          |");	
-	printAtRowCol(10 ,  0, "|                                                          |");	
-	printAtRowCol(11 ,  0, "|                                                          |");	
-	printAtRowCol(12 ,  0, "|                                                          |");	
-	printAtRowCol(13 ,  0, "|                                                          |");	
-	printAtRowCol(14,  0, "|                                                          |");	
-	printAtRowCol(15 ,  0, "|                                                          |");	
-	printAtRowCol(16 ,  0, "|                                                          |");	
+	for(int line = 3; line < 17; line++) {
+ 		printAtRowCol(line ,  0, "|                                                          |");
+	}
 	refresh();
-
 }
 
 /**
@@ -412,9 +393,6 @@ void nextLevel() {
 
 	// Hide level information
 	hideLevel();
-
-	// Draw enemies
-	drawEnemies();
 
 	// Show level
 	char buffer[12];
@@ -492,9 +470,9 @@ void drawBullets() {
  * Finish the game
  */
 void endGame() {
-	printAtRowCol(21 , 0, "|Do you really want to quit the game?                      |");
-	printAtRowCol(22 , 0, "|    Press Y to confirm                                    |");
-	printAtRowCol(23 , 0, "|    Or N to keep playing                                  |");
+	printAtRowCol(21 , 1, "Do you really want to quit the game?                      ");
+	printAtRowCol(22 , 1, "    Press Y to confirm                                    ");
+	printAtRowCol(23 , 1, "    Or N to keep playing                                  ");
     refresh();
     int ch;
 	while (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n') {
