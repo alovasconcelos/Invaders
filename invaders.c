@@ -267,7 +267,7 @@ void resetEnemiesStatus() {
 /**
  * Show level information
  */
-void showLevel() {
+void showLevelOpening() {
  	printAtRowCol(3 ,  1, "          #       ######  #    #  ######  #               ");
 	printAtRowCol(4 ,  1, "          #       #       #    #  #       #               ");
 	printAtRowCol(5 ,  1, "          #       #####   #    #  #####   #               ");
@@ -366,7 +366,7 @@ void showLevel() {
 /**
  * Hide level information
  */
-void hideLevel() {
+void hideLevelOpening() {
 	for(int line = 3; line < 17; line++) {
  		printAtRowCol(line ,  1, "                                                          ");
 	}
@@ -377,6 +377,7 @@ void hideLevel() {
  * Start the next level
  */
 void nextLevel() {
+	// Set default values
 	level++;
 	cannonCol = 28;	
 	enemiesCol = 10;
@@ -402,15 +403,15 @@ void nextLevel() {
 	showHelp();
 
 	// Show level
-	showLevel();
+	showLevelOpening();
 
 	// Wait 2 seconds
 	sleep(2);
 
 	// Hide level information
-	hideLevel();
+	hideLevelOpening();
 
-	// Show level
+	// Show level on the screen
 	char buffer[12];
 	snprintf(buffer, 12,"%d",level);
 	attron(COLOR_PAIR(LEVEL_COLOR));
@@ -672,6 +673,10 @@ int main(void) {
 
 	// Initialize random seed
 	srand(time(NULL));	
+
+	// Show opening screen
+	openingScreen();
+	sleep(2);
 
 	// Start level 1
 	nextLevel();
