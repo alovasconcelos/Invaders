@@ -98,6 +98,7 @@ void updateScore() {
 	attron(COLOR_PAIR(SCORE_COLOR));
 	printAtRowCol(1, 8, buffer);
 	attroff(COLOR_PAIR(SCORE_COLOR));
+	refresh();
 }
 
 /**
@@ -129,6 +130,7 @@ void drawScreen() {
 	printAtRowCol(22 , 0, "|                                                          |");
 	printAtRowCol(23 , 0, "|                                                          |");
 	printAtRowCol(24 , 0, "+----------------------------------------------------------+");
+	refresh();
 }
 
 /**
@@ -156,6 +158,7 @@ void drawCannon() {
 	printAtRowCol(19, cannonCol, cannon);
 	printAtRowCol(19, cannonCol + 1, "");
 	attroff(COLOR_PAIR(CANNON_COLOR));
+	refresh();
 }
 
 /**
@@ -163,6 +166,7 @@ void drawCannon() {
  */
 void clearCannon() {
 	printAtRowCol(19, cannonCol, "   ");
+	refresh();
 }
 
 /**
@@ -189,6 +193,17 @@ void fire() {
 	}
 }
 
+void openingScreen() {
+	printAtRowCol(6,1,"###                                                       ");
+	printAtRowCol(7,1," #   #    #  #    #    ##    #####   ######  #####   #### ");
+	printAtRowCol(8,1," #   ##   #  #    #   #  #   #    #  #       #    # #     ");
+	printAtRowCol(9,1," #   # #  #  #    #  #    #  #    #  #####   #    #  #### ");
+	printAtRowCol(10,1," #   #  # #  #    #  ######  #    #  #       #####       #");
+	printAtRowCol(11,1," #   #   ##   #  #   #    #  #    #  #       #   #  #    #");
+	printAtRowCol(12,1,"###  #    #    ##    #    #  #####   ######  #    #  #### ");
+	refresh();
+}
+
 /**
  * Game over
  */
@@ -210,6 +225,7 @@ void gameOver() {
 	printAtRowCol(21 , 1, "                                                          ");
 	printAtRowCol(22 , 1, "                                                          ");
 	printAtRowCol(23 , 1, "By: André Vasconcelos        https://alovasconcelos.com.br");
+	refresh();
 }
 
 
@@ -252,95 +268,95 @@ void resetEnemiesStatus() {
  * Show level information
  */
 void showLevel() {
- 	printAtRowCol(3 ,  0, "|          #       ######  #    #  ######  #               |");
-	printAtRowCol(4 ,  0, "|          #       #       #    #  #       #               |");
-	printAtRowCol(5 ,  0, "|          #       #####   #    #  #####   #               |");
-	printAtRowCol(6 ,  0, "|          #       #       #    #  #       #               |");
-	printAtRowCol(7 ,  0, "|          #       #        #  #   #       #               |");
-	printAtRowCol(8 ,  0, "|          ######  ######    ##    ######  ######          |");	
+ 	printAtRowCol(3 ,  1, "          #       ######  #    #  ######  #               ");
+	printAtRowCol(4 ,  1, "          #       #       #    #  #       #               ");
+	printAtRowCol(5 ,  1, "          #       #####   #    #  #####   #               ");
+	printAtRowCol(6 ,  1, "          #       #       #    #  #       #               ");
+	printAtRowCol(7 ,  1, "          #       #        #  #   #       #               ");
+	printAtRowCol(8 ,  1, "          ######  ######    ##    ######  ######          ");	
 
 	switch (level)
 	{
 		case 1:
-			printAtRowCol(10 , 0, "|                            #                             |");	
-			printAtRowCol(11 , 0, "|                           ##                             |");	
-			printAtRowCol(12 , 0, "|                          # #                             |");	
-			printAtRowCol(13 , 0, "|                            #                             |");	
-			printAtRowCol(14 , 0, "|                            #                             |");	
-			printAtRowCol(15 , 0, "|                            #                             |");	
-			printAtRowCol(16 , 0, "|                          #####                           |");	
+			printAtRowCol(10 , 1, "                            #                             ");	
+			printAtRowCol(11 , 1, "                           ##                             ");	
+			printAtRowCol(12 , 1, "                          # #                             ");	
+			printAtRowCol(13 , 1, "                            #                             ");	
+			printAtRowCol(14 , 1, "                            #                             ");	
+			printAtRowCol(15 , 1, "                            #                             ");	
+			printAtRowCol(16 , 1, "                          #####                           ");	
 			break;
 		case 2:
-			printAtRowCol(10 , 0, "|                          #####                           |");	
-			printAtRowCol(11 , 0, "|                         #     #                          |");	
-			printAtRowCol(12 , 0, "|                               #                          |");	
-			printAtRowCol(13 , 0, "|                          #####                           |");	
-			printAtRowCol(14 , 0, "|                         #                                |");	
-			printAtRowCol(15 , 0, "|                         #                                |");	
-			printAtRowCol(16 , 0, "|                         #######                          |");	
+			printAtRowCol(10 , 1, "                          #####                           ");	
+			printAtRowCol(11 , 1, "                         #     #                          ");	
+			printAtRowCol(12 , 1, "                               #                          ");	
+			printAtRowCol(13 , 1, "                          #####                           ");	
+			printAtRowCol(14 , 1, "                         #                                ");	
+			printAtRowCol(15 , 1, "                         #                                ");	
+			printAtRowCol(16 , 1, "                         #######                          ");	
 			break;
 		case 3:
-			printAtRowCol(10 , 0, "|                          #####                           |");	
-			printAtRowCol(11 , 0, "|                         #     #                          |");	
-			printAtRowCol(12 , 0, "|                               #                          |");	
-			printAtRowCol(13 , 0, "|                          #####                           |");	
-			printAtRowCol(14 , 0, "|                               #                          |");	
-			printAtRowCol(15 , 0, "|                         #     #                          |");	
-			printAtRowCol(16 , 0, "|                          #####                           |");	
+			printAtRowCol(10 , 1, "                          #####                           ");	
+			printAtRowCol(11 , 1, "                         #     #                          ");	
+			printAtRowCol(12 , 1, "                               #                          ");	
+			printAtRowCol(13 , 1, "                          #####                           ");	
+			printAtRowCol(14 , 1, "                               #                          ");	
+			printAtRowCol(15 , 1, "                         #     #                          ");	
+			printAtRowCol(16 , 1, "                          #####                           ");	
 			break;
 		case 4:
-			printAtRowCol(10 , 0, "|                         #                                |");	
-			printAtRowCol(11 , 0, "|                         #    #                           |");	
-			printAtRowCol(12 , 0, "|                         #    #                           |");	
-			printAtRowCol(13 , 0, "|                         #######                          |");	
-			printAtRowCol(14 , 0, "|                              #                           |");	
-			printAtRowCol(15 , 0, "|                              #                           |");	
-			printAtRowCol(16 , 0, "|                              #                           |");	
+			printAtRowCol(10 , 1, "                         #                                ");	
+			printAtRowCol(11 , 1, "                         #    #                           ");	
+			printAtRowCol(12 , 1, "                         #    #                           ");	
+			printAtRowCol(13 , 1, "                         #######                          ");	
+			printAtRowCol(14 , 1, "                              #                           ");	
+			printAtRowCol(15 , 1, "                              #                           ");	
+			printAtRowCol(16 , 1, "                              #                           ");	
 			break;
 		case 5:
-			printAtRowCol(10 , 0, "|                        #######                           |");	
-			printAtRowCol(11 , 0, "|                        #                                 |");	
-			printAtRowCol(12 , 0, "|                        #                                 |");	
-			printAtRowCol(13 , 0, "|                         #####                            |");	
-			printAtRowCol(14 , 0, "|                              #                           |");	
-			printAtRowCol(15 , 0, "|                        #     #                           |");	
-			printAtRowCol(16 , 0, "|                         #####                            |");	
+			printAtRowCol(10 , 1, "                        #######                           ");	
+			printAtRowCol(11 , 1, "                        #                                 ");	
+			printAtRowCol(12 , 1, "                        #                                 ");	
+			printAtRowCol(13 , 1, "                         #####                            ");	
+			printAtRowCol(14 , 1, "                              #                           ");	
+			printAtRowCol(15 , 1, "                        #     #                           ");	
+			printAtRowCol(16 , 1, "                         #####                            ");	
 			break;
 		case 6:
-			printAtRowCol(10 , 0, "|                         #####                            |");	
-			printAtRowCol(11 , 0, "|                        #     #                           |");	
-			printAtRowCol(12 , 0, "|                        #                                 |");	
-			printAtRowCol(13 , 0, "|                        ######                            |");	
-			printAtRowCol(14 , 0, "|                        #     #                           |");	
-			printAtRowCol(15 , 0, "|                        #     #                           |");	
-			printAtRowCol(16 , 0, "|                         #####                            |");	
+			printAtRowCol(10 , 1, "                         #####                            ");	
+			printAtRowCol(11 , 1, "                        #     #                           ");	
+			printAtRowCol(12 , 1, "                        #                                 ");	
+			printAtRowCol(13 , 1, "                        ######                            ");	
+			printAtRowCol(14 , 1, "                        #     #                           ");	
+			printAtRowCol(15 , 1, "                        #     #                           ");	
+			printAtRowCol(16 , 1, "                         #####                            ");	
 			break;
 		case 7:
-			printAtRowCol(10 , 0, "|                        #######                           |");	
-			printAtRowCol(11 , 0, "|                        #    #                            |");	
-			printAtRowCol(12 , 0, "|                            #                             |");	
-			printAtRowCol(13 , 0, "|                           #                              |");	
-			printAtRowCol(14 , 0, "|                          #                               |");	
-			printAtRowCol(15 , 0, "|                          #                               |");	
-			printAtRowCol(16 , 0, "|                          #                               |");	
+			printAtRowCol(10 , 1, "                        #######                           ");	
+			printAtRowCol(11 , 1, "                        #    #                            ");	
+			printAtRowCol(12 , 1, "                            #                             ");	
+			printAtRowCol(13 , 1, "                           #                              ");	
+			printAtRowCol(14 , 1, "                          #                               ");	
+			printAtRowCol(15 , 1, "                          #                               ");	
+			printAtRowCol(16 , 1, "                          #                               ");	
 			break;
 		case 8:
-			printAtRowCol(10 , 0, "|                         #####                            |");	
-			printAtRowCol(11 , 0, "|                        #     #                           |");	
-			printAtRowCol(12 , 0, "|                        #     #                           |");	
-			printAtRowCol(13 , 0, "|                         #####                            |");	
-			printAtRowCol(14 , 0, "|                        #     #                           |");	
-			printAtRowCol(15 , 0, "|                        #     #                           |");	
-			printAtRowCol(16 , 0, "|                         #####                            |");	
+			printAtRowCol(10 , 1, "                         #####                            ");	
+			printAtRowCol(11 , 1, "                        #     #                           ");	
+			printAtRowCol(12 , 1, "                        #     #                           ");	
+			printAtRowCol(13 , 1, "                         #####                            ");	
+			printAtRowCol(14 , 1, "                        #     #                           ");	
+			printAtRowCol(15 , 1, "                        #     #                           ");	
+			printAtRowCol(16 , 1, "                         #####                            ");	
 			break;
 		case 9:
-			printAtRowCol(10 , 0, "|                         #####                            |");	
-			printAtRowCol(11 , 0, "|                        #     #                           |");	
-			printAtRowCol(12 , 0, "|                        #     #                           |");	
-			printAtRowCol(13 , 0, "|                         ######                           |");	
-			printAtRowCol(14 , 0, "|                              #                           |");	
-			printAtRowCol(15 , 0, "|                        #     #                           |");	
-			printAtRowCol(16 , 0, "|                         #####                            |");	
+			printAtRowCol(10 , 1, "                         #####                            ");	
+			printAtRowCol(11 , 1, "                        #     #                           ");	
+			printAtRowCol(12 , 1, "                        #     #                           ");	
+			printAtRowCol(13 , 1, "                         ######                           ");	
+			printAtRowCol(14 , 1, "                              #                           ");	
+			printAtRowCol(15 , 1, "                        #     #                           ");	
+			printAtRowCol(16 , 1, "                         #####                            ");	
 			break;
 	}
 
@@ -352,7 +368,7 @@ void showLevel() {
  */
 void hideLevel() {
 	for(int line = 3; line < 17; line++) {
- 		printAtRowCol(line ,  0, "|                                                          |");
+ 		printAtRowCol(line ,  1, "                                                          ");
 	}
 	refresh();
 }
@@ -464,16 +480,16 @@ void drawBullets() {
 		}		
 	}
 	attroff(COLOR_PAIR(BULLET_COLOR));
+	refresh();
 }
 
 /**
  * Finish the game
  */
-void endGame() {
+void finish() {
 	printAtRowCol(21 , 1, "Do you really want to quit the game?                      ");
 	printAtRowCol(22 , 1, "    Press Y to confirm                                    ");
 	printAtRowCol(23 , 1, "    Or N to keep playing                                  ");
-    refresh();
     int ch;
 	while (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n') {
 		ch = wgetch(mainwin);
@@ -682,15 +698,14 @@ int main(void) {
 				fire();
 				break;
 			case KEY_END:
-				endGame();
+				finish();
 				break;
 		}
+		updateScore();
 		if (updateEnemies() == 1) {
 			drawBullets();
 			checkTargetHit();
-			updateScore();
 			drawCannon();
-			refresh();
 			if (killedEnemies == 28) {
 				if (level < 9) {
 					// Go to next level
@@ -699,8 +714,6 @@ int main(void) {
 			}
 		}else{
 			gameOver();
-			updateScore();
-			refresh();
 			sleep(2);
 			restartGame();
 			nextLevel();
