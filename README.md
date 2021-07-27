@@ -1,4 +1,4 @@
-# invaders
+# Invaders
 Small game written in C, using text mode.
 
 Compile with NCurses:
