@@ -121,9 +121,14 @@ void openingScreen() {
  */
 void clearScreen() {
 	for (int line = 3; line < 20; line++) {
-		printAtRowCol(line,  1, "                                                          ");	
+		for(int col = 58; col > 0; col--) {
+			printAtRowCol(line, col, "<");
+			refresh();
+			usleep(500);
+			printAtRowCol(line, col, " ");
+			refresh();
+		}
 	}
-	refresh();
 }
 
 /**
@@ -221,7 +226,6 @@ void gameOver() {
 	printAtRowCol(16 , 1, "              #    #  #    #  #       #####               ");
 	printAtRowCol(17 , 1, "              #    #   #  #   #       #   #               ");
 	printAtRowCol(18 , 1, "               ####     ##    ######  #    #              ");
-	printAtRowCol(23 , 1, "By: André Vasconcelos        https://alovasconcelos.com.br");
 	refresh();
 }
 
@@ -663,6 +667,7 @@ int main(void) {
 			clearScreen();
 			gameOver();
 			sleep(2);
+			clearScreen();
 			restartGame();
 			nextLevel();
 		}
