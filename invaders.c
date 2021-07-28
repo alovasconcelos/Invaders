@@ -13,12 +13,19 @@
 #include <time.h>
 #include <string.h>
 
-// Constants to colors definition
+
 #define BULLET_COLOR 1
 #define ENEMY_COLOR 2
 #define CANNON_COLOR 3
 #define SCORE_COLOR 4
 #define LEVEL_COLOR 5
+#define SHOT_NOT_FIRED 0
+#define SHOT_FIRED 1
+#define ENEMY_KILLED 0
+#define ENEMY_ALIVE 1
+#define CANNON_LINE 19
+#define GAME_OVER 0
+#define KEEP_RUNING 1
 
 // Cannon
 char *cannon = "^-^";
@@ -54,17 +61,11 @@ int enemiesRow;
 int enemiesDirection;
 
 // Flags indicating fired bullets
-int fire1;
-int fire2;
-int fire3;
+int shots[3];
 
 // Bullets positions
-int bullet1Row;
-int bullet2Row;
-int bullet3Row;
-int bullet1Col;
-int bullet2Col;
-int bullet3Col;
+int bulletRow[3];
+int bulletCol[3];
 
 // Score
 int score = 0;
@@ -74,10 +75,7 @@ int tick;
 
 
 // Array of enemies status - 1:alive 0:killed
-int enemiesStatus[28] = {1,1,1,1,1,1,1,
-					1,1,1,1,1,1,1,
-					1,1,1,1,1,1,1,
-					1,1,1,1,1,1,1};
+int enemiesStatus[28];
 
 // Number of killed enemies
 int killedEnemies;
@@ -98,6 +96,33 @@ void updateScore() {
 	attron(COLOR_PAIR(SCORE_COLOR));
 	printAtRowCol(1, 8, buffer);
 	attroff(COLOR_PAIR(SCORE_COLOR));
+}
+
+/**
+ * Draw the opening screen
+ */
+void openingScreen() {
+	for(int line=5; line<12; line++) {
+		printAtRowCol(line, 1,"                                                          ");
+		printAtRowCol(line + 1, 1,"###                                                       ");
+		printAtRowCol(line + 2, 1," #   #    #  #    #    ##    #####   ######  #####   #### ");
+		printAtRowCol(line + 3, 1," #   ##   #  #    #   #  #   #    #  #       #    # #     ");
+		printAtRowCol(line + 4, 1," #   # #  #  #    #  #    #  #    #  #####   #    #  #### ");
+		printAtRowCol(line + 5, 1," #   #  # #  #    #  ######  #    #  #       #####       #");
+		printAtRowCol(line + 6, 1," #   #   ##   #  #   #    #  #    #  #       #   #  #    #");
+		printAtRowCol(line + 7, 1,"###  #    #    ##    #    #  #####   ######  #    #  #### ");
+		refresh();
+		usleep(100000);
+	}
+}
+
+/**
+ * Clear the game board 
+ */
+void clearScreen() {
+	for (int line = 3; line < 20; line++) {
+		printAtRowCol(line,  1, "                                                          ");	
+	}
 	refresh();
 }
 
@@ -130,7 +155,6 @@ void drawScreen() {
 	printAtRowCol(22 , 0, "|                                                          |");
 	printAtRowCol(23 , 0, "|                                                          |");
 	printAtRowCol(24 , 0, "+----------------------------------------------------------+");
-	refresh();
 }
 
 /**
@@ -155,53 +179,30 @@ char getCharRowCol(int row, int col) {
  */
 void drawCannon() {
 	attron(COLOR_PAIR(CANNON_COLOR));
-	printAtRowCol(19, cannonCol, cannon);
-	printAtRowCol(19, cannonCol + 1, "");
+	printAtRowCol(CANNON_LINE, cannonCol, cannon);
+	printAtRowCol(CANNON_LINE, cannonCol + 1, "");
 	attroff(COLOR_PAIR(CANNON_COLOR));
-	refresh();
 }
 
 /**
  * Clear the cannon
  */
 void clearCannon() {
-	printAtRowCol(19, cannonCol, "   ");
-	refresh();
+	printAtRowCol(CANNON_LINE, cannonCol, "   ");
 }
 
 /**
  * Fire bullets
  */
 void fire() {
-	if (fire1 == 0) {
-		// fire bullet 1
-		bullet1Col = cannonCol + 1;
-		fire1 = 1;		
-		return;
+	for (int bulletNumber = 0; bulletNumber < 3; bulletNumber++) {
+		if (shots[bulletNumber] == SHOT_NOT_FIRED) {
+			// fire bullet
+			bulletCol[bulletNumber] = cannonCol + 1;
+			shots[bulletNumber] = SHOT_FIRED;		
+			return;
+		}
 	}
-	if (fire2 == 0) {
-		// fire bullet 1
-		bullet2Col = cannonCol + 1;
-		fire2 = 1;
-		return;
-	}
-	if (fire3 == 0) {
-		// fire bullet 1
-		bullet3Col = cannonCol + 1;
-		fire3 = 1;
-		return;
-	}
-}
-
-void openingScreen() {
-	printAtRowCol(6,1,"###                                                       ");
-	printAtRowCol(7,1," #   #    #  #    #    ##    #####   ######  #####   #### ");
-	printAtRowCol(8,1," #   ##   #  #    #   #  #   #    #  #       #    # #     ");
-	printAtRowCol(9,1," #   # #  #  #    #  #    #  #    #  #####   #    #  #### ");
-	printAtRowCol(10,1," #   #  # #  #    #  ######  #    #  #       #####       #");
-	printAtRowCol(11,1," #   #   ##   #  #   #    #  #    #  #       #   #  #    #");
-	printAtRowCol(12,1,"###  #    #    ##    #    #  #####   ######  #    #  #### ");
-	refresh();
 }
 
 /**
@@ -220,10 +221,6 @@ void gameOver() {
 	printAtRowCol(16 , 1, "              #    #  #    #  #       #####               ");
 	printAtRowCol(17 , 1, "              #    #   #  #   #       #   #               ");
 	printAtRowCol(18 , 1, "               ####     ##    ######  #    #              ");
-	printAtRowCol(19 , 1, "                                                          ");
-	printAtRowCol(20 , 1, "                                                          ");
-	printAtRowCol(21 , 1, "                                                          ");
-	printAtRowCol(22 , 1, "                                                          ");
 	printAtRowCol(23 , 1, "By: André Vasconcelos        https://alovasconcelos.com.br");
 	refresh();
 }
@@ -240,9 +237,9 @@ int drawEnemies() {
 				attron(COLOR_PAIR(ENEMY_COLOR));
 				printAtRowCol(row, col, enemy);
 				attron(COLOR_PAIR(ENEMY_COLOR));
-				if (row == 19) {
+				if (row == CANNON_LINE) {
 					// Game over
-					return 0;
+					return GAME_OVER;
 				}
 			}else{
 				printAtRowCol(row, col, "   ");
@@ -251,16 +248,26 @@ int drawEnemies() {
 			refresh();
 		}
 	}
-
-	return 1;
+	return KEEP_RUNING;
 }
 
 /**
  * Reset enemies status
-*/
+ */
 void resetEnemiesStatus() {
-	for(int i=0; i<28; i++) {
-		enemiesStatus[i]=1;
+	for(int enemyNumber=0; enemyNumber<28; enemyNumber++) {
+		enemiesStatus[enemyNumber] = ENEMY_ALIVE;
+	}
+}
+
+/**
+ * Reset the bullets status
+ */
+void resetBulletsStatus() {
+	for(int bulletNumber=0; bulletNumber<3; bulletNumber++) {
+		shots[bulletNumber] = SHOT_NOT_FIRED;
+		bulletRow[bulletNumber] = CANNON_LINE -1;
+		bulletCol[bulletNumber] = CANNON_LINE -1;
 	}
 }
 
@@ -364,40 +371,19 @@ void showLevelOpening() {
 }
 
 /**
- * Hide level information
- */
-void hideLevelOpening() {
-	for(int line = 3; line < 17; line++) {
- 		printAtRowCol(line ,  1, "                                                          ");
-	}
-	refresh();
-}
-
-/**
  * Start the next level
  */
 void nextLevel() {
-	// Set default values
 	level++;
 	cannonCol = 28;	
 	enemiesCol = 10;
 	enemiesRow = 5;
 	enemiesDirection = 1;
-	fire1 = 0;
-	fire2 = 0;
-	fire3 = 0;
-	bullet1Row = 18;
-	bullet2Row = 18;
-	bullet3Row = 18;
-	bullet1Col = 0;
-	bullet2Col = 0;
-	bullet3Col = 0;
+
 	tick = 0;
 	killedEnemies = 0;
 	resetEnemiesStatus();
-
-	// Draw game screen
-	drawScreen();
+	resetBulletsStatus();
 
 	// Show help bar
 	showHelp();
@@ -409,9 +395,9 @@ void nextLevel() {
 	sleep(2);
 
 	// Hide level information
-	hideLevelOpening();
+	clearScreen();
 
-	// Show level on the screen
+	// Show level
 	char buffer[12];
 	snprintf(buffer, 12,"%d",level);
 	attron(COLOR_PAIR(LEVEL_COLOR));
@@ -444,50 +430,27 @@ void clearEnemies() {
  */
 void drawBullets() {
 	attron(COLOR_PAIR(BULLET_COLOR));
-	if (fire1 == 1) {
-		if (bullet1Row < 18) {
-			printAtRowCol(bullet1Row + 1, bullet1Col, " ");
+	for (int bulletNumber = 0; bulletNumber < 3; bulletNumber++) {
+		if (shots[bulletNumber] == SHOT_FIRED) {
+			if (bulletRow[bulletNumber] < CANNON_LINE - 1) {
+				printAtRowCol(bulletRow[bulletNumber] + 1, bulletCol[bulletNumber], " ");
+			}
+			printAtRowCol(bulletRow[bulletNumber], bulletCol[bulletNumber], bullet);
+			bulletRow[bulletNumber]--;	
+			if (bulletRow[bulletNumber] == 2) {
+				printAtRowCol(bulletRow[bulletNumber] + 1, bulletCol[bulletNumber], " ");
+				shots[bulletNumber] = SHOT_NOT_FIRED;
+				bulletRow[bulletNumber] = CANNON_LINE - 1;
+			}
 		}
-		printAtRowCol(bullet1Row, bullet1Col, bullet);
-		bullet1Row--;	
-		if (bullet1Row == 2) {
-			printAtRowCol(bullet1Row + 1, bullet1Col, " ");
-			fire1 = 0;
-			bullet1Row = 18;
-		}
-	}
-	if (fire2 == 1) {
-		if (bullet2Row < 18) {
-			printAtRowCol(bullet2Row + 1, bullet2Col, " ");
-		}
-		printAtRowCol(bullet2Row, bullet2Col, bullet);
-		bullet2Row--;	
-		if (bullet2Row == 2) {
-			printAtRowCol(bullet2Row + 1, bullet2Col, " ");
-			fire2 = 0;
-			bullet2Row = 18;
-		}
-	}
-	if (fire3 == 1) {
-		if (bullet3Row < 18) {
-			printAtRowCol(bullet3Row + 1, bullet3Col, " ");
-		}
-		printAtRowCol(bullet3Row, bullet3Col, bullet);
-		bullet3Row--;	
-		if (bullet3Row == 2) {
-			printAtRowCol(bullet3Row + 1, bullet3Col, " ");
-			fire3 = 0;
-			bullet3Row = 18;
-		}		
 	}
 	attroff(COLOR_PAIR(BULLET_COLOR));
-	refresh();
 }
 
 /**
  * Finish the game
  */
-void finish() {
+void endGame() {
 	printAtRowCol(21 , 1, "Do you really want to quit the game?                      ");
 	printAtRowCol(22 , 1, "    Press Y to confirm                                    ");
 	printAtRowCol(23 , 1, "    Or N to keep playing                                  ");
@@ -497,9 +460,10 @@ void finish() {
 	}
               
     if(ch == 'y' || ch == 'Y') {
-		keepRunning = 0;
-    }
-	showHelp();
+		keepRunning = GAME_OVER;
+    }else{
+		showHelp();
+	}
 }
 
 /**
@@ -507,8 +471,8 @@ void finish() {
  */
 void explodeEnemy(int row, int col) {
 	for(int i = 0 ; i < 5; i++) {
-		printAtRowCol(row, col, "***");
-		usleep(5000);
+		printAtRowCol(row, col, explosionParts[i]);
+		usleep(8000);
 		refresh();
 	}
 }
@@ -523,7 +487,7 @@ int isEnemy(int row, int col) {
 			if (enemiesStatus[enemyNumber]) {
 				if (row == enemyRow && col >= enemyCol && col <= enemyCol + 2) {
 					// Enemy has been hit
-					enemiesStatus[enemyNumber] = 0;
+					enemiesStatus[enemyNumber] = ENEMY_KILLED;
 					explodeEnemy(enemyRow, enemyCol);
 					killedEnemies++;
 					score += enemyRow;
@@ -553,17 +517,17 @@ int updateEnemies() {
 			enemiesRow++;
 		}
 	}
-	if(drawEnemies() == 0){
-		return 0;
+	if(drawEnemies() == GAME_OVER){
+		return GAME_OVER;
 	}
 
-	if (enemiesCol == 19) {
+	if (enemiesCol == CANNON_LINE) {
 		enemiesDirection = -1;
 	}
 	if (enemiesCol == 1) {
 		enemiesDirection = 1;
 	}
-	return 1;
+	return KEEP_RUNING;
 }
 
 /**
@@ -592,48 +556,22 @@ void destroyBullet(int row, int col) {
  * Reset fire
  */
 void resetFire(int bulletNumber) {	
-	switch(bulletNumber) {
-		case 1:			
-			destroyBullet(bullet1Row + 1, bullet1Col);
-			fire1 = 0;
-			bullet1Row = 18;
-			break;
-		case 2:
-			destroyBullet(bullet2Row + 1, bullet2Col);
-			fire2 = 0;
-			bullet2Row = 18;
-			break;
-		case 3:
-			destroyBullet(bullet3Row + 1, bullet3Col);
-			fire3 = 0;
-			bullet3Row = 18;
-			break;
-	}
+	destroyBullet(bulletRow[bulletNumber] + 1, bulletCol[bulletNumber]);
+	shots[bulletNumber] = SHOT_NOT_FIRED;
+	bulletRow[bulletNumber] = CANNON_LINE -1;
 }
 
 /**
  * Check if the target has been hit
  */
 void checkTargetHit() {	
-	if (fire1) {
-		// bullet 1 is fired
-		if (isEnemy(bullet1Row, bullet1Col)) {
-			destroyEnemy(bullet1Row, bullet1Col);
-			resetFire(1);
-		}
-	}
-	if (fire2) {
-		// bullet 2 is fired
-		if (isEnemy(bullet2Row, bullet2Col)) {
-			destroyEnemy(bullet2Row, bullet2Col);
-			resetFire(2);
-		}
-	}
-	if (fire3) {
-		// bullet 3 is fired
-		if (isEnemy(bullet3Row, bullet3Col)) {
-			destroyEnemy(bullet3Row, bullet3Col);
-			resetFire(3);
+	for(int bulletNumber = 0; bulletNumber < 3; bulletNumber++) {
+		if (shots[bulletNumber]) {
+			// bullet is fired
+			if (isEnemy(bulletRow[bulletNumber], bulletCol[bulletNumber])) {
+				destroyEnemy(bulletRow[bulletNumber], bulletCol[bulletNumber]);
+				resetFire(bulletNumber);
+			}
 		}
 	}
 }
@@ -653,6 +591,9 @@ int main(void) {
 	keypad(mainwin, TRUE);
 	cbreak();
 	noecho();
+
+	// Draw game screen
+	drawScreen();
 
 	// Initialize colors
 	if (has_colors() == FALSE) {
@@ -677,6 +618,7 @@ int main(void) {
 	// Show opening screen
 	openingScreen();
 	sleep(2);
+	clearScreen();
 
 	// Start level 1
 	nextLevel();
@@ -703,11 +645,11 @@ int main(void) {
 				fire();
 				break;
 			case KEY_END:
-				finish();
+				endGame();
 				break;
 		}
 		updateScore();
-		if (updateEnemies() == 1) {
+		if (updateEnemies() == KEEP_RUNING) {
 			drawBullets();
 			checkTargetHit();
 			drawCannon();
@@ -718,6 +660,7 @@ int main(void) {
 				}
 			}
 		}else{
+			clearScreen();
 			gameOver();
 			sleep(2);
 			restartGame();
