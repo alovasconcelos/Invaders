@@ -14,6 +14,7 @@
 #include <string.h>
 
 
+#define TOTAL_ENEMIES 28
 #define BULLET_COLOR 1
 #define ENEMY_COLOR 2
 #define CANNON_COLOR 3
@@ -31,7 +32,11 @@
 char *cannon = "^-^";
 
 // Enemy
-char *enemy = ">o<";
+//char *enemy[2] = {">o<", "\\o/"};
+char *enemy[2] = {"\\o/", "/o\\"};
+
+// Enemies wings position
+int enemiesWingsPosition;
 
 // Bullet
 char *bullet = "^";
@@ -75,10 +80,10 @@ int tick;
 
 
 // Array of enemies status - 1:alive 0:killed
-int enemiesStatus[28];
+int enemiesStatus[TOTAL_ENEMIES];
 
-// Number of killed enemies
-int killedEnemies;
+// Number of remaining enemies
+int remainingEnemies;
 
 /**
  * 	Print string at specified coordinate
@@ -239,7 +244,7 @@ int drawEnemies() {
 		for(int col = enemiesCol; col < enemiesCol + 37; col += 6) {
 			if (enemiesStatus[enemyNumber]) {
 				attron(COLOR_PAIR(ENEMY_COLOR));
-				printAtRowCol(row, col, enemy);
+				printAtRowCol(row, col, enemy[enemiesWingsPosition]);
 				attron(COLOR_PAIR(ENEMY_COLOR));
 				if (row == CANNON_LINE) {
 					// Game over
@@ -259,7 +264,7 @@ int drawEnemies() {
  * Reset enemies status
  */
 void resetEnemiesStatus() {
-	for(int enemyNumber=0; enemyNumber<28; enemyNumber++) {
+	for(int enemyNumber = 0; enemyNumber < TOTAL_ENEMIES; enemyNumber++) {
 		enemiesStatus[enemyNumber] = ENEMY_ALIVE;
 	}
 }
@@ -383,9 +388,10 @@ void nextLevel() {
 	enemiesCol = 10;
 	enemiesRow = 5;
 	enemiesDirection = 1;
+	enemiesWingsPosition = 0;
 
 	tick = 0;
-	killedEnemies = 0;
+	remainingEnemies = TOTAL_ENEMIES;
 	resetEnemiesStatus();
 	resetBulletsStatus();
 
@@ -493,7 +499,7 @@ int isEnemy(int row, int col) {
 					// Enemy has been hit
 					enemiesStatus[enemyNumber] = ENEMY_KILLED;
 					explodeEnemy(enemyRow, enemyCol);
-					killedEnemies++;
+					remainingEnemies--;
 					score += enemyRow;
 					return 1;
 				}
@@ -515,10 +521,12 @@ int updateEnemies() {
 		if (r > 50) {
 			clearEnemies();
 			enemiesCol += enemiesDirection;
+			enemiesWingsPosition = enemiesWingsPosition == 0 ? 1 : 0;
 		}
 		if (r < 10) {		
 			clearEnemies();
 			enemiesRow++;
+			enemiesWingsPosition = enemiesWingsPosition == 0 ? 1 : 0;
 		}
 	}
 	if(drawEnemies() == GAME_OVER){
@@ -538,13 +546,13 @@ int updateEnemies() {
  * Destroy enemy
  */
 void destroyEnemy(int row, int col) {
-	if (getCharRowCol(row, col) == '>') {
+	if (getCharRowCol(row, col + 1) == 'o') {
 		printAtRowCol(row, col, "   ");		
 	}
 	if (getCharRowCol(row, col) == 'o') {
 		printAtRowCol(row, col-1, "   ");		
 	}
-	if (getCharRowCol(row, col) == '<') {
+	if (getCharRowCol(row, col - 1) == 'o') {
 		printAtRowCol(row, col-2, "   ");		
 	}
 }
@@ -657,7 +665,7 @@ int main(void) {
 			drawBullets();
 			checkTargetHit();
 			drawCannon();
-			if (killedEnemies == 28) {
+			if (remainingEnemies == 0) {
 				if (level < 9) {
 					// Go to next level
 					nextLevel();
