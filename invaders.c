@@ -219,6 +219,7 @@ void fire() {
  * Game over
  */
 void gameOver() {
+	clearScreen();
  	printAtRowCol(5 ,  1, "               ####     ##    #    #  ######              ");
 	printAtRowCol(6 ,  1, "              #    #   #  #   ##  ##  #                   ");
 	printAtRowCol(7 ,  1, "              #       #    #  # ## #  #####               ");
@@ -232,6 +233,8 @@ void gameOver() {
 	printAtRowCol(17 , 1, "              #    #   #  #   #       #   #               ");
 	printAtRowCol(18 , 1, "               ####     ##    ######  #    #              ");
 	refresh();
+	sleep(2);
+	restartGame();
 }
 
 
@@ -421,6 +424,8 @@ void nextLevel() {
 void restartGame() {
 	level = 0;
 	score = 0;
+	clearScreen();
+	nextLevel();
 }
 
 /**
@@ -589,6 +594,26 @@ void checkTargetHit() {
 }
 
 /**
+ * Move cannon to left
+ */
+void moveCannonLeft() {
+	if(cannonCol > 1) {
+		clearCannon();
+		cannonCol--;
+	}
+}
+
+/**
+ * Move cannon to right
+ */
+void moveCannonRight() {
+	if(cannonCol < 56) {
+		clearCannon();
+		cannonCol++;
+	}
+}
+
+/**
  * Main function
  */
 int main(void) {
@@ -638,20 +663,15 @@ int main(void) {
     // Game loop
 	while(keepRunning == 1) {
 		halfdelay(1);
+		// Keyboard input
 		key = wgetch(mainwin);
 		switch(key)
 		{	
 			case KEY_LEFT:
-				if(cannonCol > 1) {
-					clearCannon();
-					cannonCol--;
-				}
+				moveCannonLeft();
 				break;
 			case KEY_RIGHT:
-				if(cannonCol < 56) {
-					clearCannon();
-					cannonCol++;
-				}
+				moveCannonRight();
 				break;
 			case ' ':
 				fire();
@@ -672,12 +692,7 @@ int main(void) {
 				}
 			}
 		}else{
-			clearScreen();
 			gameOver();
-			sleep(2);
-			clearScreen();
-			restartGame();
-			nextLevel();
 		}
 	}
 
