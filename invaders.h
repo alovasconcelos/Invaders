@@ -2,8 +2,8 @@
  * Invaders
  * By André Luiz de Oliveira Vasconcelos
  * https://alovasconcelos.com.br
- * https://github.com/alovasconcelos/invaders
  * alovasconcelos@gmail.com
+ * https://github.com/alovasconcelos/invaders
  * invaders.h
  * 2021
  */
