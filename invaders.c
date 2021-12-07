@@ -3,7 +3,7 @@
  * By André Luiz de Oliveira Vasconcelos
  * https://alovasconcelos.com.br
  * alovasconcelos@gmail.com
- * https://github.com/alovasconcelos/invaders
+ * https://github.com/alovasconcelos/Invaders
  * invaders.c
  * 2021
  */
