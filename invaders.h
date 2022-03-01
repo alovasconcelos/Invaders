@@ -8,6 +8,7 @@
  * 2021
  */
 
+// Constants
 #define TOTAL_ENEMIES 28
 #define BULLET_COLOR 1
 #define ENEMY_COLOR 2
@@ -26,7 +27,6 @@
 char *cannon = "|^|";
 
 // Enemy
-//char *enemy[2] = {">o<", "\\o/"};
 char *enemy[2] = {"\\o/", "/o\\"};
 
 // Enemies wings position
@@ -71,7 +71,6 @@ int score = 0;
 
 // Counter used to control enemies moves
 int tick;
-
 
 // Array of enemies status - 1:alive 0:killed
 int enemiesStatus[TOTAL_ENEMIES];

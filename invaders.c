@@ -57,7 +57,11 @@ int main(void) {
 
 	// Show opening screen
 	openingScreen();
+
+	// Wait 2 seconds
 	sleep(2);
+
+	// Clear the screen
 	clearScreen();
 
 	// Start level 1
@@ -65,8 +69,8 @@ int main(void) {
 
     // Game loop
 	while(keepRunning == 1) {
-		halfdelay(1);
 		// Keyboard input
+		halfdelay(1);
 		key = wgetch(mainwin);
 		switch(key)
 		{	
@@ -83,22 +87,32 @@ int main(void) {
 				endGame();
 				break;
 		}
+		// Update the game score
 		updateScore();
 		if (updateEnemies() == KEEP_RUNING) {
+			// Draw the bullets on the game field
 			drawBullets();
+
+	 		// Check if any bullet hit some target		
 			checkTargetHit();
+
+			// Draw the cannon 
 			drawCannon();
-			if (remainingEnemies == 0) {
-				if (level < 9) {
-					// Go to next level
-					nextLevel();
-				}
+
+			// If there's no more enemies and 
+			// the level number is less than 9
+			// then go to nextlevel
+			if (remainingEnemies == 0 && level < 9) {
+				// Go to next level
+				nextLevel();
 			}
 		}else{
+			// Game over
 			gameOver();
 		}
 	}
 
+	// Destroy the game field
     delwin(mainwin);
     endwin();
     refresh();
